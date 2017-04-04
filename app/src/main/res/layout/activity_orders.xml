@@ -228,7 +228,19 @@
             android:textSize="15dp"
 
             />
+
     </LinearLayout>
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_gravity="end"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@color/blueButton"
+        android:textColor="@android:color/white"
+        android:color="@color/borderButton"/>
 
 
 </LinearLayout>

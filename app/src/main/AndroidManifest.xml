@@ -21,7 +21,8 @@
         </activity>
         <activity
             android:name=".HomeActivity"
-            android:label="E-Cakery" >
+            android:label="E-Cakery"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -129,18 +131,24 @@ public class MainActivity extends AppCompatActivity {
                 }
                 // When Http response code other than 404, 500
                 else{
-                    Toast.makeText(getApplicationContext(), "Unexpected Error occcured! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
     /**
-     * Method which navigates from Login Activity to Home Activity
+     * Method which navigates from Main Activity to Home Activity
      */
     public void navigatetoHomeActivity(){
         Intent homeIntent = new Intent(getApplicationContext(),HomeActivity.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(homeIntent);
+        finish();
     }
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
 }

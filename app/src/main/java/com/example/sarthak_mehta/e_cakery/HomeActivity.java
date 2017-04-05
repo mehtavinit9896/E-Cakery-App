@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -48,6 +49,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     View layout2;
     ViewGroup layout;
     String page;
+    Handler mHandler;
+    Context context;
     List<View> views=new ArrayList<View>();
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -55,8 +58,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         //Displays Home Screen
+
         page="packed";
-        invokeWS(this,"packed");
+        context=this;
+        invokeWS("packed");
+        this.mHandler = new Handler();
+        this.mHandler.postDelayed(m_Runnable,120000);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.content_frame);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -83,9 +90,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         startActivity(homeIntent);
     }
 
-    public void invokeWS(final Context context, final String s) {
+    public void invokeWS(final String s) {
 
         // Make RESTful webservice call using AsyncHttpClient object
+
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("order_status", s);
@@ -133,7 +141,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 public void onClick(View v) {
                                     for(View view:views) {
                                         if(v.equals(view.findViewById(R.id.button))){
-                                            invokeDeliveredWS(context,Integer.toString(view.getId()),s);
+                                            invokeDeliveredWS(Integer.toString(view.getId()),s);
                                             if(s.equals("packed")){
                                                 Toast.makeText(getApplicationContext(), "Order"+view.getId()+" Delivered", Toast.LENGTH_LONG).show();
                                             }else{
@@ -182,7 +190,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-    public void invokeDeliveredWS(final Context context, String s, final String status){
+    public void invokeDeliveredWS(String s, final String status){
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("order_no", s);
@@ -200,10 +208,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     if (obj.getBoolean("status")) {
                         if(status.equals("packed")){
                             layout.removeAllViews();
-                            invokeWS(context,"packed");
+                            invokeWS("packed");
                         }else if(status.equals("delivered")){
                             layout.removeAllViews();
-                            invokeWS(context,"delivered");
+                            invokeWS("delivered");
                         }
                     } else {
 
@@ -254,20 +262,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onRefresh() {
         mSwipeRefreshLayout.setRefreshing(true);
-        if(page.equals("packed")){
-            if(layout!=null && layout.getChildCount()!=0) {
-                layout.removeAllViews();
-            }
-            invokeWS(this,"packed");
-            mSwipeRefreshLayout.setRefreshing(false);
-        }else if(page.equals("delivered")){
-            if(layout!=null && layout.getChildCount()!=0) {
-                layout.removeAllViews();
-            }
-            invokeWS(this,"delivered");
-            mSwipeRefreshLayout.setRefreshing(false);
+        if(layout!=null && layout.getChildCount()!=0) {
+            layout.removeAllViews();
         }
-    }
+        invokeWS(page);
+        mSwipeRefreshLayout.setRefreshing(false);
+        }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -276,12 +276,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_packed) {
             page="packed";
             layout.removeAllViews();
-            invokeWS(this,"packed");
+            invokeWS("packed");
 
         }else if (id == R.id.nav_delivered) {
             page="delivered";
             layout.removeAllViews();
-            invokeWS(this,"delivered");
+            invokeWS("delivered");
 
         } else if (id == R.id.nav_logout) {
             sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
@@ -295,5 +295,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    private final Runnable m_Runnable = new Runnable()
+    {
+        public void run()
+
+        {
+            if(layout!=null && layout.getChildCount()!=0) {
+                layout.removeAllViews();
+            }
+            invokeWS(page);
+            mHandler.postDelayed(m_Runnable,120000);
+        }
+
+    };
 
 }

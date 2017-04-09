@@ -49,6 +49,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     View layout2;
     ViewGroup layout;
     String page;
+    String city;
     Handler mHandler;
     Context context;
     List<View> views=new ArrayList<View>();
@@ -58,7 +59,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         //Displays Home Screen
-
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        sharedpreferences.getString("city",city);
         page="packed";
         context=this;
         invokeWS("packed");
@@ -97,6 +99,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("order_status", s);
+        params.put("city",city);
         client.get("http://192.168.0.101:8080/E-Cakery/rest/webservices/getpackedorders",params, new AsyncHttpResponseHandler() {
             // When the response returned by REST has Http response code '200'
             @Override
@@ -121,6 +124,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             TextView seller_name = (TextView) layout2.findViewById(R.id.seller_name);
                             TextView seller_address = (TextView) layout2.findViewById(R.id.seller_address);
                             TextView price = (TextView) layout2.findViewById(R.id.price);
+                            TextView status = (TextView) layout2.findViewById(R.id.status);
+                            TextView _status = (TextView) layout2.findViewById(R.id._status);
+                            if(s.equals("packed")){
+                                status.setText(json.getString("status"));
+                            }
+                            else{
+                                 status.setVisibility(View.GONE);
+                                _status.setVisibility(View.GONE);
+                            }
                             order_no.setText(json.getString("oid"));
                             price.setText(json.getString("amount"));
                             cust_name.setText(json.getString("fname") + "" + json.getString("lname"));
@@ -287,6 +299,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.remove("email");
+            editor.remove("city");
             editor.commit();
             finish();
             navigatetoMainActivity();

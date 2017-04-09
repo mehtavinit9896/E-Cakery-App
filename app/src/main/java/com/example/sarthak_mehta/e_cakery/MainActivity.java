@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putString("email", email);
+                        editor.putString("city",obj.getString("city"));
                         editor.commit();
                         Toast.makeText(getApplicationContext(), "You are successfully logged in!", Toast.LENGTH_LONG).show();
                         // Navigate to Home screen

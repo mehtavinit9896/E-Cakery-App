@@ -135,7 +135,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             }
                             order_no.setText(json.getString("oid"));
                             price.setText(json.getString("amount"));
-                            cust_name.setText(json.getString("fname") + "" + json.getString("lname"));
+                            cust_name.setText(json.getString("fname") + " " + json.getString("lname"));
                             cust_mob.setText(json.getString("mobile"));
                             cust_address.setText(json.getString("address"));
                             cust_pin.setText(json.getString("pincode"));
@@ -287,12 +287,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         if (id == R.id.nav_packed) {
             page="packed";
-            layout.removeAllViews();
+            if(layout!=null && layout.getChildCount()!=0) {
+                layout.removeAllViews();
+            }
             invokeWS("packed");
 
         }else if (id == R.id.nav_delivered) {
             page="delivered";
-            layout.removeAllViews();
+            if(layout!=null && layout.getChildCount()!=0) {
+                layout.removeAllViews();
+            }
             invokeWS("delivered");
 
         } else if (id == R.id.nav_logout) {
